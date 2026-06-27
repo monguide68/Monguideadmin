@@ -477,14 +477,7 @@
 
   ::-webkit-scrollbar { width: 0; }
 </style>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FKPVNQYRL9"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FKPVNQYRL9');
-  </script>
+  /script>
 </head>
 <body>
 <div id="app"></div>
@@ -1926,35 +1919,6 @@ function renderOrganismsList() {
   `;
 }
 
-function getVotes() {
-  try { return JSON.parse(localStorage.getItem('votes') || '{}'); } catch(e) { return {}; }
-}
-
-function saveVote(id, value) {
-  const votes = getVotes();
-  if (!votes[id]) votes[id] = { yes: 0, no: 0 };
-  votes[id][value]++;
-  votes[id].voted = true;
-  localStorage.setItem('votes', JSON.stringify(votes));
-  render();
-}
-
-function renderVoteBlock(id) {
-  const votes = getVotes();
-  const v = votes[id];
-  if (v && v.voted) {
-    return `<div class="vote-block"><p class="vote-thanks">${t("voteThanks")}</p></div>`;
-  }
-  return `
-    <div class="vote-block">
-      <p>${t("useful")}</p>
-      <div class="vote-buttons">
-        <button class="vote-btn yes" onclick="saveVote('${id}','yes')">${t("voteYes")}</button>
-        <button class="vote-btn no" onclick="saveVote('${id}','no')">${t("voteNo")}</button>
-      </div>
-    </div>
-  `;
-}
 
 function renderOrganismDetail() {
   const o = organisms.find(x => x.id === state.currentOrganism);
