@@ -104,7 +104,45 @@
     font-size: 16px;
   }
 
-  .accent-bar {
+  .vote-block {
+    margin-top: 24px;
+    padding: 16px;
+    background: #F8F7FF;
+    border-radius: 16px;
+    border: 1px solid #E0D8FF;
+    text-align: center;
+  }
+  .vote-block p {
+    font-size: 13px;
+    color: var(--texte-secondaire);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .vote-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+  .vote-btn {
+    flex: 1;
+    max-width: 140px;
+    padding: 12px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    font-size: 22px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.15s;
+  }
+  .vote-btn.yes { background: #E8F5E9; border-color: #4CAF50; color: #2E7D32; }
+  .vote-btn.no  { background: #FFEBEE; border-color: #F44336; color: #C62828; }
+  .vote-btn.voted { opacity: 0.6; cursor: default; }
+  .vote-thanks {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2E7D32;
+    margin-top: 8px;
+  }
     height: 4px;
     background: linear-gradient(90deg, var(--bleu) 0%, var(--bleu) 60%, var(--or) 80%, var(--rouge) 100%);
   }
@@ -508,6 +546,9 @@ const i18n = {
     prioritySteps: "Premières démarches à faire",
     seeDocumentsFor: "Voir les documents >>",
     useful: "Cette page vous a-t-elle été utile ?",
+    voteYes: "👍 Oui, utile",
+    voteNo: "👎 Pas vraiment",
+    voteThanks: "✅ Merci pour votre retour !",
     welcomeMsg: "Nous sommes là pour vous accompagner gratuitement dans toutes vos démarches administratives en ligne.",
     cyberboatTagline: "Espace informatique à votre disposition",
     cyberboatIntro: "Besoin d'un ordinateur pour naviguer ou effectuer vos démarches administratives ?",
@@ -584,6 +625,9 @@ const i18n = {
     prioritySteps: "First steps to take",
     seeDocumentsFor: "See documents >>",
     useful: "Was this page helpful?",
+    voteYes: "👍 Yes, helpful",
+    voteNo: "👎 Not really",
+    voteThanks: "✅ Thank you for your feedback!",
     welcomeMsg: "We are here to support you free of charge with all your online administrative procedures.",
     cyberboatTagline: "Computer space available to you",
     cyberboatIntro: "Need a computer to browse the internet or complete administrative procedures?",
@@ -660,6 +704,9 @@ const i18n = {
     prioritySteps: "أولى الخطوات التي يجب اتخاذها",
     seeDocumentsFor: "عرض الوثائق <<",
     useful: "هل كانت هذه الصفحة مفيدة لك؟",
+    voteYes: "👍 نعم، مفيدة",
+    voteNo: "👎 ليس كثيرًا",
+    voteThanks: "✅ شكرًا على ملاحظتك!",
     welcomeMsg: "نحن هنا لمساعدتكم مجانًا في جميع إجراءاتكم الإدارية عبر الإنترنت.",
     cyberboatTagline: "فضاء معلوماتي في خدمتكم",
     cyberboatIntro: "تحتاجون إلى حاسوب للتصفح أو لإنجاز إجراءاتكم الإدارية؟",
@@ -736,6 +783,9 @@ const i18n = {
     prioritySteps: "Erste Schritte",
     seeDocumentsFor: "Dokumente ansehen >>",
     useful: "War diese Seite hilfreich?",
+    voteYes: "👍 Ja, hilfreich",
+    voteNo: "👎 Nicht wirklich",
+    voteThanks: "✅ Danke für Ihr Feedback!",
     welcomeMsg: "Wir unterstützen Sie kostenlos bei allen Ihren Online-Verwaltungsangelegenheiten.",
     cyberboatTagline: "Computerraum zu Ihrer Verfügung",
     cyberboatIntro: "Brauchen Sie einen Computer zum Surfen oder für Verwaltungsangelegenheiten?",
@@ -1862,6 +1912,36 @@ function renderOrganismsList() {
   `;
 }
 
+function getVotes() {
+  try { return JSON.parse(localStorage.getItem('votes') || '{}'); } catch(e) { return {}; }
+}
+
+function saveVote(id, value) {
+  const votes = getVotes();
+  if (!votes[id]) votes[id] = { yes: 0, no: 0 };
+  votes[id][value]++;
+  votes[id].voted = true;
+  localStorage.setItem('votes', JSON.stringify(votes));
+  render();
+}
+
+function renderVoteBlock(id) {
+  const votes = getVotes();
+  const v = votes[id];
+  if (v && v.voted) {
+    return `<div class="vote-block"><p class="vote-thanks">${t("voteThanks")}</p></div>`;
+  }
+  return `
+    <div class="vote-block">
+      <p>${t("useful")}</p>
+      <div class="vote-buttons">
+        <button class="vote-btn yes" onclick="saveVote('${id}','yes')">${t("voteYes")}</button>
+        <button class="vote-btn no" onclick="saveVote('${id}','no')">${t("voteNo")}</button>
+      </div>
+    </div>
+  `;
+}
+
 function renderOrganismDetail() {
   const o = organisms.find(x => x.id === state.currentOrganism);
   if (!o) return `<div class="empty-state"><div class="icon">🔍</div><p>${t("noPartnerSelected")}</p></div>`;
@@ -1963,6 +2043,8 @@ function renderOrganismDetail() {
     ${o.note && !isEmpty ? `<div class="note-box">💡 ${o.note[state.lang] || o.note.fr}</div>` : ""}
 
     ${isEmpty && !o.note ? `<div class="empty-state"><div class="icon">🚧</div><p>${state.lang === 'ar' ? 'سيتم استكمال القائمة قريبًا' : state.lang === 'de' ? 'Liste wird bald ergänzt' : state.lang === 'en' ? 'List to be completed soon' : 'Liste à compléter prochainement'}</p></div>` : ""}
+
+    ${renderVoteBlock('doc-' + o.id)}
   `;
 }
 
@@ -2027,6 +2109,8 @@ function renderPartnerDetail() {
       </div>
       <div class="row-chevron">›</div>
     </div>
+
+    ${renderVoteBlock('partner-' + o.id)}
   `;
 }
 
