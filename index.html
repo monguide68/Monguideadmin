@@ -2119,7 +2119,7 @@ function renderPartnerDetail() {
 
     ${o.note ? `<div class="note-box">💡 ${o.note[state.lang] || o.note.fr}</div>` : ""}
 
-    ${renderVoteBlock('doc-' + o.id)}
+    ${renderVoteBlock('partner-' + o.id)}
 
     <div class="row-card" data-organism="${o.id}" style="margin-top:16px; border-color:var(--bleu);">
       <div class="row-icon" style="background:var(--bleu); color:white;">📋</div>
