@@ -147,7 +147,7 @@
     background: linear-gradient(90deg, var(--bleu) 0%, var(--bleu) 60%, var(--or) 80%, var(--rouge) 100%);
   }
 
-  main { padding: 20px; padding-bottom: 90px; }
+  main { padding: 16px 16px; padding-bottom: 220px; }
 
   /* ---------- LANGUAGE SCREEN ---------- */
   .lang-screen {
@@ -1711,12 +1711,14 @@ const siteInfo = {
   permanences: [
     {
       name: { fr: "CAF (assistantes sociales)", en: "CAF (social workers)", ar: "صندوق CAF (أخصائيات اجتماعيات)", de: "CAF (Sozialarbeiterinnen)" },
-      hours: { fr: "Mardis 9h00 – 12h00 / Jeudis 9h00 – 12h00", en: "Tuesdays 9am–12pm / Thursdays 9am–12pm", ar: "الثلاثاء 9h00–12h00 / الخميس 9h00–12h00", de: "Dienstags 9–12 Uhr / Donnerstags 9–12 Uhr" },
+      hours: { fr: "Mardis et jeudis matin 8h30 – 12h00", en: "Tuesdays and Thursdays morning 8:30am–12pm", ar: "الثلاثاء والخميس صباحًا 8h30–12h00", de: "Dienstags und Donnerstags morgens 8:30–12 Uhr" },
+      contact: "32.30",
       note: { fr: "Ces permanences sont sur rendez-vous fixé par la CAF. Les usagers doivent avoir un rendez-vous préalablement fixé par la CAF elle-même.", en: "These sessions are by appointment set by CAF. Users must have an appointment previously arranged by CAF.", ar: "هذه الجلسات بموعد محدد من الصندوق. يجب أن يكون للمستخدمين موعد محدد مسبقًا من طرف CAF.", de: "Diese Sprechstunden sind nur nach Terminvereinbarung durch die CAF. Nutzer müssen einen von der CAF festgelegten Termin haben." }
     },
     {
       name: { fr: "Sémaphore", en: "Sémaphore", ar: "Sémaphore", de: "Sémaphore" },
-      hours: { fr: "Jeudis 13h30 – 17h00 / Vendredis 8h30 – 12h00", en: "Thursdays 1:30pm–5pm / Fridays 8:30am–12pm", ar: "الخميس 13h30–17h00 / الجمعة 8h30–12h00", de: "Donnerstags 13:30–17 Uhr / Freitags 8:30–12 Uhr" },
+      hours: { fr: "Vendredis matin 8h30 – 12h00", en: "Fridays morning 8:30am–12pm", ar: "الجمعة صباحًا 8h30–12h00", de: "Freitags morgens 8:30–12 Uhr" },
+      contact: "03.89.66.33.13",
       note: { fr: "Ces permanences sont sur rendez-vous fixé par le Sémaphore. Les usagers doivent avoir un rendez-vous préalablement fixé par le Sémaphore lui-même.", en: "These sessions are by appointment set by Sémaphore. Users must have an appointment previously arranged by Sémaphore.", ar: "هذه الجلسات بموعد محدد من طرف Sémaphore. يجب أن يكون للمستخدمين موعد محدد مسبقًا من طرف Sémaphore.", de: "Diese Sprechstunden sind nur nach Terminvereinbarung durch Sémaphore. Nutzer müssen einen von Sémaphore festgelegten Termin haben." }
     },
   ],
@@ -2180,7 +2182,8 @@ function renderInfo() {
       ${siteInfo.permanences.map(p => `
         <div style="padding:12px 0; border-bottom:1px solid #F0EDE3;">
           <div style="font-size:14px; font-weight:700; margin-bottom:4px;">${p.name[state.lang] || p.name.fr}</div>
-          <div style="font-size:13px; color:var(--texte-secondaire); margin-bottom:${p.note ? '6px' : '0'};">${p.hours[state.lang] || p.hours.fr}</div>
+          <div style="font-size:13px; color:var(--texte-secondaire); margin-bottom:4px;">${p.hours[state.lang] || p.hours.fr}</div>
+          ${p.contact ? `<div style="font-size:13px; color:var(--bleu); font-weight:600;">📞 ${p.contact}</div>` : ""}
           ${p.note ? `<div class="note-box" style="margin-top:6px; font-size:12px;">⚠️ ${p.note[state.lang] || p.note.fr}</div>` : ""}
         </div>
       `).join("")}
