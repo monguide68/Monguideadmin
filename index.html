@@ -1867,16 +1867,16 @@ function renderScreenContent() {
 function renderHome() {
   const open = isOpenNow();
   return `
-    <div class="site-card" style="padding:14px 16px; margin-bottom:12px;">
-      <h2 style="font-size:16px; margin-bottom:2px;">${t("siteName")}</h2>
-      <div class="addr" style="font-size:12px; margin-bottom:8px;">${t("address")}</div>
-      <div class="status-row" style="font-size:12px;">
+    <div class="site-card" style="padding:18px 16px; margin-bottom:14px;">
+      <h2 style="font-size:19px; margin-bottom:4px;">${t("siteName")}</h2>
+      <div class="addr" style="font-size:14px; margin-bottom:10px;">${t("address")}</div>
+      <div class="status-row" style="font-size:13px;">
         <span class="dot ${open ? "" : "closed"}"></span>
         ${open ? t("openNow") : t("closedNow")}
       </div>
     </div>
 
-    <p style="font-size:13px; color:var(--texte-secondaire); line-height:1.5; margin-bottom:14px;">${t("welcomeMsg")}</p>
+    <p style="font-size:13px; color:var(--bleu); line-height:1.6; margin-bottom:14px; text-align:center; font-weight:600; padding:0 8px;">${t("welcomeMsg")}</p>
 
     <div style="text-align:center;background:#F8F7FF;border-radius:12px;padding:10px;margin-bottom:14px;border:1px solid #E0D8FF;">
       ${(() => {
