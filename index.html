@@ -148,6 +148,7 @@
   }
 
   main { padding: 16px 16px; padding-bottom: 140px; }
+  .detail-page main { padding-bottom: 40px; }
 
   /* ---------- LANGUAGE SCREEN ---------- */
   .lang-screen {
@@ -477,7 +478,8 @@
 
   ::-webkit-scrollbar { width: 0; }
 </style>
-  /script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FKPVNQYRL9"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-FKPVNQYRL9');</script>
 </head>
 <body>
 <div id="app"></div>
@@ -1773,11 +1775,13 @@ function render() {
     return;
   }
 
+  const isDetail = ["organism-detail","partners-detail","situation-detail"].includes(state.screen);
   app.innerHTML = `
     ${renderTopbar()}
-    <div class="accent-bar"></div>
-    <main>${renderScreenContent()}</main>
-    ${renderBottomNav()}
+    <main style="${isDetail ? 'padding-bottom:60px;' : ''}">
+      ${renderScreenContent()}
+    </main>
+    ${isDetail ? "" : renderBottomNav()}
   `;
   attachGlobalEvents();
 }
