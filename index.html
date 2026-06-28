@@ -548,7 +548,7 @@ const i18n = {
     maSituationSub: "Trouvez les démarches prioritaires selon votre situation",
     prioritySteps: "Premières démarches à faire",
     seeDocumentsFor: "Voir les documents >>",
-    useful: "Cette page vous a-t-elle été utile ?",
+    useful: "Ce site vous a-t-il été utile ?",
     voteYes: "👍 Oui, utile",
     voteNo: "👎 Pas vraiment",
     voteThanks: "✅ Merci pour votre retour !",
@@ -627,7 +627,7 @@ const i18n = {
     maSituationSub: "Find priority procedures based on your situation",
     prioritySteps: "First steps to take",
     seeDocumentsFor: "See documents >>",
-    useful: "Was this page helpful?",
+    useful: "Was this site helpful?",
     voteYes: "👍 Yes, helpful",
     voteNo: "👎 Not really",
     voteThanks: "✅ Thank you for your feedback!",
@@ -706,7 +706,7 @@ const i18n = {
     maSituationSub: "اكتشف الإجراءات ذات الأولوية حسب وضعيتك",
     prioritySteps: "أولى الخطوات التي يجب اتخاذها",
     seeDocumentsFor: "عرض الوثائق <<",
-    useful: "هل كانت هذه الصفحة مفيدة لك؟",
+    useful: "هل كان هذا الموقع مفيدًا لك؟",
     voteYes: "👍 نعم، مفيدة",
     voteNo: "👎 ليس كثيرًا",
     voteThanks: "✅ شكرًا على ملاحظتك!",
@@ -785,7 +785,7 @@ const i18n = {
     maSituationSub: "Finden Sie die vorrangigen Schritte für Ihre Situation",
     prioritySteps: "Erste Schritte",
     seeDocumentsFor: "Dokumente ansehen >>",
-    useful: "War diese Seite hilfreich?",
+    useful: "War diese Website hilfreich?",
     voteYes: "👍 Ja, hilfreich",
     voteNo: "👎 Nicht wirklich",
     voteThanks: "✅ Danke für Ihr Feedback!",
@@ -1779,9 +1779,10 @@ function render() {
 
   const isDetail = ["organism-detail","partners-detail","situation-detail"].includes(state.screen);
   const isList = ["organisms","partners","situation","info","cyberboat"].includes(state.screen);
+  const isHome = state.screen === "home";
   app.innerHTML = `
     ${renderTopbar()}
-    <main style="${isDetail ? 'padding-bottom:60px;' : isList ? 'padding-bottom:200px;' : ''}">
+    <main style="${isDetail ? 'padding-bottom:60px;' : isList ? 'padding-bottom:200px;' : isHome ? 'padding-bottom:180px;' : ''}">
       ${renderScreenContent()}
     </main>
     ${isDetail ? "" : renderBottomNav()}
@@ -1866,17 +1867,28 @@ function renderScreenContent() {
 function renderHome() {
   const open = isOpenNow();
   return `
-    <div class="site-card">
-      <span class="tag">${t("qpv")}</span>
-      <h2>${t("siteName")}</h2>
-      <div class="addr">${t("address")}</div>
-      <div class="status-row">
+    <div class="site-card" style="padding:14px 16px; margin-bottom:12px;">
+      <h2 style="font-size:16px; margin-bottom:2px;">${t("siteName")}</h2>
+      <div class="addr" style="font-size:12px; margin-bottom:8px;">${t("address")}</div>
+      <div class="status-row" style="font-size:12px;">
         <span class="dot ${open ? "" : "closed"}"></span>
         ${open ? t("openNow") : t("closedNow")}
       </div>
     </div>
 
-    <p style="font-size:14px; color:var(--texte-secondaire); line-height:1.5; margin-bottom:18px;">${t("welcomeMsg")}</p>
+    <p style="font-size:13px; color:var(--texte-secondaire); line-height:1.5; margin-bottom:14px;">${t("welcomeMsg")}</p>
+
+    <div style="text-align:center;background:#F8F7FF;border-radius:12px;padding:10px;margin-bottom:14px;border:1px solid #E0D8FF;">
+      ${(() => {
+        const v = (() => { try { return JSON.parse(localStorage.getItem('site-vote')||'{}'); } catch(e) { return {}; } })();
+        if(v.voted) return `<p style="font-size:13px;font-weight:700;color:#2E7D32;">✅ Merci pour votre retour !</p>`;
+        return `<p style="font-size:12px;color:var(--texte-secondaire);font-weight:600;margin-bottom:8px;">${t("useful")}</p>
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <button onclick="var v=JSON.parse(localStorage.getItem('site-vote')||'{}');v.voted=true;v.value='yes';localStorage.setItem('site-vote',JSON.stringify(v));render();" style="flex:1;max-width:100px;padding:7px;border:2px solid #4CAF50;border-radius:10px;background:#E8F5E9;color:#2E7D32;font-weight:700;font-size:20px;cursor:pointer;">👍</button>
+          <button onclick="var v=JSON.parse(localStorage.getItem('site-vote')||'{}');v.voted=true;v.value='no';localStorage.setItem('site-vote',JSON.stringify(v));render();" style="flex:1;max-width:100px;padding:7px;border:2px solid #F44336;border-radius:10px;background:#FFEBEE;color:#C62828;font-weight:700;font-size:20px;cursor:pointer;">👎</button>
+        </div>`;
+      })()}
+    </div>
 
     <div class="menu-grid" style="grid-template-columns: 1fr 1fr 1fr; gap:8px;">
       <div class="menu-card" data-nav="organisms" style="padding:12px 10px;">
@@ -1906,18 +1918,6 @@ function renderHome() {
         </div>
       </a>
     </div>
-
-    ${(() => {
-      const v = (() => { try { return JSON.parse(localStorage.getItem('site-vote')||'{}'); } catch(e) { return {}; } })();
-      if(v.voted) return `<div style="text-align:center;background:#E8F5E9;border-radius:12px;padding:10px;margin-top:16px;font-size:13px;font-weight:700;color:#2E7D32;">✅ Merci pour votre retour !</div>`;
-      return `<div style="text-align:center;background:#F8F7FF;border-radius:12px;padding:12px;margin-top:16px;border:1px solid #E0D8FF;">
-        <p style="font-size:12px;color:var(--texte-secondaire);font-weight:600;margin-bottom:8px;">${t("useful")}</p>
-        <div style="display:flex;gap:8px;justify-content:center;">
-          <button onclick="var v=JSON.parse(localStorage.getItem('site-vote')||'{}');v.voted=true;v.value='yes';localStorage.setItem('site-vote',JSON.stringify(v));render();" style="flex:1;max-width:120px;padding:8px;border:2px solid #4CAF50;border-radius:10px;background:#E8F5E9;color:#2E7D32;font-weight:700;font-size:14px;cursor:pointer;">👍</button>
-          <button onclick="var v=JSON.parse(localStorage.getItem('site-vote')||'{}');v.voted=true;v.value='no';localStorage.setItem('site-vote',JSON.stringify(v));render();" style="flex:1;max-width:120px;padding:8px;border:2px solid #F44336;border-radius:10px;background:#FFEBEE;color:#C62828;font-weight:700;font-size:14px;cursor:pointer;">👎</button>
-        </div>
-      </div>`;
-    })()}
   `;
 }
 
@@ -2161,6 +2161,12 @@ function renderInfo() {
           ${p.note ? `<div class="note-box" style="margin-top:6px; font-size:12px;">⚠️ ${p.note[state.lang] || p.note.fr}</div>` : ""}
         </div>
       `).join("")}
+    </div>
+
+    <div class="note-box" style="margin-top:16px; border-left:4px solid #E1000F; background:#FFF5F5;">
+      <p style="font-size:13px; font-weight:700; color:#C0001A; margin-bottom:6px;">⚠️ Information importante</p>
+      <p style="font-size:13px; line-height:1.6;">Les horaires d'ouverture indiqués sont susceptibles d'être modifiés ponctuellement (réunions, absences, conditions climatiques exceptionnelles...). Nous vous recommandons de contacter le <strong>03 39 72 02 10</strong> avant votre déplacement — ligne accessible les mercredis, jeudis et vendredis de 9h à 12h.</p>
+      <p style="font-size:12px; color:var(--texte-secondaire); margin-top:6px; font-style:italic;">En cas d'absence de personnel ou de service réduit, la ligne téléphonique peut ne pas être disponible. Votre compréhension est appréciée.</p>
     </div>
   `;
 }
